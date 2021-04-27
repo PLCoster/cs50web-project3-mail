@@ -99,6 +99,5 @@ Requires Python(3) and the Python Pacakage Installe (pip) to run:
 ```
 python manage.py makemigrations mail
 python manage.py migrate
-
 ```
 * Run the app locally: `python manage.py runserver`
