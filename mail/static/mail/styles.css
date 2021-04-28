@@ -1,3 +1,7 @@
 textarea {
     min-height: 400px;
 }
+
+.alert p {
+    margin-bottom: 0;
+}
