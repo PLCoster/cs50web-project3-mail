@@ -61,10 +61,25 @@ function send_email() {
   // Check form for errors (no addresses)
   if (recipients === '') {
     flash_alert('warning', "Please add a valid recipient!")
+    return false;
   }
-  console.log(recipients, subject, body);
 
-  return false;
+  // If no errors, send email to server via API POST request
+  fetch('/emails', {
+    method: 'POST',
+    body: JSON.stringify({
+        recipients: recipients,
+        subject: subject,
+        body: body
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+      // Print result
+      console.log(result);
+  });
+
+  console.log(recipients, subject, body);
 }
 
 function flash_alert(type, text) {
