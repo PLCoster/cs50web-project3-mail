@@ -1,16 +1,48 @@
+
+/*=========================================================
+CUSTOM STYLES
+===========================================================
+*/
+
+/*=============================
+FONTS
+===============================
+*/
+
+body {
+  background: #fff;
+  color: black;
+  font: 400 16px/22px "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.1;
+  margin: 0 0 0 0;
+}
+
+h2 {
+  margin-top: 10px;
+}
+
 textarea {
     min-height: 400px;
 }
 
 .alert p {
-    margin-bottom: 0;
+    margin: 3px 0 3px 0;
 }
 
-.clearfix::after {
-  content: "";
-  clear: both;
-  display: table;
+/*=============================
+HEADER
+===============================
+*/
+
+#header hr {
+  height: 0;
+  border-top: 2px solid black;
 }
+
+/*=============================
+MAILBOX VIEW
+===============================
+*/
 
 #mailbox-name {
 }
@@ -26,17 +58,37 @@ textarea {
 }
 
 .mailbox-sender{
-  margin: 5px;
+  margin: 2px 5px 0 5px;
   font-weight: bold;
 }
 
 .mailbox-date{
+  margin: 0 10px 0 5px;
   position: absolute;
-  top: 30%;
-  right: 5%;
+  top: 25%;
+  right: 0;
   font-weight: 200;
 }
 
 .mailbox-subject{
-  margin: 5px;
+  margin: 0 5px 2px 5px;
+}
+
+/*=============================
+EMAIL VIEW
+===============================
+*/
+
+#email-subject{
+}
+
+#email-date{
+  font-weight: 200;
+}
+
+#email-recipients{
+
+}
+
+#email-body{
 }

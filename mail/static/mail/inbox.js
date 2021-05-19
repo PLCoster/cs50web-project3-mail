@@ -8,7 +8,8 @@ function compose_email() {
   hide_alerts();
 
   // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#mailbox').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -28,36 +29,45 @@ function load_mailbox(mailbox) {
   fetch_emails(mailbox);
 
   // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
+  document.querySelector('#mailbox').style.display = 'block';
 
   // Show the mailbox name
   document.querySelector('#mailbox-name').innerHTML = `${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}`;
 }
 
-function fetch_emails(mailbox, email_id = null) {
-  // Fetch desired email(s) from specified mailbox using API
-  // If email_id is set, fetches a single email from the users emails instead, and then displays it.
+function view_email(emailObj) {
+  // View individual email when clicked on in a mailbox
 
-  let request;
+  // Hide any alerts
+  hide_alerts();
 
-  if (!email_id) {
-    request = `/emails/${mailbox}`
-  } else {
-    request = `/emails/${email_id}`
-  }
+  // Add email content to screen
+  document.querySelector('#email-subject').innerHTML = emailObj['subject'];
+  document.querySelector('#email-date').innerHTML = emailObj['timestamp']
+  document.querySelector('#email-recipients').innerHTML = emailObj['recipients'].join(', ')
+  document.querySelector('#email-body').innerHTML = emailObj['body']
+
+  // Show email view, hide other views
+  document.querySelector('#mailbox').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'block';
+
+}
+
+function fetch_emails(mailbox) {
+  // Fetch desired emails from specified mailbox using API
 
   // Fetch desired emails
-  fetch(request)
+  fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
     console.log('Fetched Emails: ', emails);
-    if(!email_id) {
-      mailboxes[mailbox] = emails;
-      console.log('Mailbox updated: ', mailboxes);
-      display_mailbox(mailbox);
+    mailboxes[mailbox] = emails;
+    display_mailbox(mailbox);
     }
-  })
+  )
   .catch(error => {
     console.log('Error:', error);
   })
@@ -80,14 +90,15 @@ function display_mailbox(mailbox) {
 
       const email = document.createElement('div');
       email.classList.add('mailbox-email');
+      email.addEventListener('click', () => view_email(emailObj))
 
       const sender = document.createElement('p');
-      sender.classList.add('mailbox-sender', 'clearfix');
+      sender.classList.add('mailbox-sender');
       sender.innerHTML = emailObj['sender'];
       email.append(sender);
 
       const date = document.createElement('p');
-      date.classList.add('mailbox-date', 'clearfix');
+      date.classList.add('mailbox-date');
       date.innerHTML = emailObj['timestamp'];
       email.append(date);
 

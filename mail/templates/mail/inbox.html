@@ -2,14 +2,17 @@
 {% load static %}
 
 {% block body %}
+
+    <div id="header">
     <h2>{{ request.user.email }}</h2>
 
-    <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
-    <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
-    <button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
-    <button class="btn btn-sm btn-outline-primary" id="archived">Archived</button>
-    <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
-    <hr>
+      <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
+      <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
+      <button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
+      <button class="btn btn-sm btn-outline-primary" id="archived">Archived</button>
+      <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
+      <hr>
+    </div>
 
     <!-- Alert Message Flashes-->
     <div id="alert-view">
@@ -35,13 +38,19 @@
       </div>
     </div>
 
-    <div id="emails-view">
+    <div id="mailbox">
       <h3 id="mailbox-name"></h3>
       <div id="mailbox-view">
       </div>
     </div>
 
-
+    <div id="email-view">
+      <h4 id="email-subject"></h4>
+      <p id="email-date"></p>
+      <p id="email-recipients"></p>
+      <hr>
+      <p id="email-body"></p>
+    </div>
 
     <div id="compose-view">
         <h3>New Email</h3>
@@ -59,6 +68,7 @@
             <input id="compose-submit" type="submit" class="btn btn-primary" value="Send"/>
         </form>
     </div>
+
 {% endblock %}
 
 {% block script %}
