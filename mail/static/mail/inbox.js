@@ -80,10 +80,12 @@ function fetch_emails(mailbox) {
 
 function display_mailbox(mailbox) {
   // Displays all emails in currently selected mailbox
+  // Counts and displays number of unread emails
 
   console.log('Displaying Mailbox')
   const mailboxView = document.querySelector('#mailbox-view');
   mailboxView.innerHTML = '';
+  let unread = 0;
 
   // If no emails, display text:
   if (mailboxes[mailbox].length === 0) {
@@ -95,7 +97,11 @@ function display_mailbox(mailbox) {
 
       const email = document.createElement('div');
       email.classList.add('mailbox-email');
-      if (emailObj['read'] === true) {email.classList.add('read')};
+      if (emailObj['read'] === true) {
+        email.classList.add('read')
+      } else {
+        unread++;
+      };
       email.addEventListener('click', () => view_email(emailObj));
 
       const status = document.createElement('div');
@@ -119,6 +125,13 @@ function display_mailbox(mailbox) {
 
       mailboxView.append(email);
     })
+  }
+
+  // Add number of unread emails to mailbox name, if not sent mailbox
+  if (mailbox != 'sent') {
+    const unreadSpan = document.createElement('span');
+    unreadSpan.innerHTML = ` (${unread})`;
+    document.querySelector('#mailbox-name').append(unreadSpan);
   }
 }
 
