@@ -57,11 +57,22 @@ function view_email(emailObj) {
   document.querySelector('#email-recipients').innerHTML = emailObj['recipients'].join(', ')
   document.querySelector('#email-body').innerHTML = emailObj['body']
 
+  // Setup Archive Button and hide on Sent Mailbox:
+  const emailArchive = document.querySelector('#email-archive')
+  if (curr_mailbox === 'sent') {
+    emailArchive.style.display = 'none';
+    emailArchive.disabled = true;
+  } else {
+    emailArchive.setAttribute('email-id', `${emailObj['id']}`)
+    emailArchive.setAttribute('email-archived', `${emailObj['archived']}`)
+    emailArchive.style.display = 'block';
+    emailArchive.disabled = false;
+  }
+
   // Show email view, hide other views
   document.querySelector('#mailbox').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#email-view').style.display = 'block';
-
 }
 
 
@@ -238,6 +249,11 @@ document.addEventListener('DOMContentLoaded', function() {
     event.preventDefault();
     send_email()
   });
+
+  // When archive button is pressed, archive/unarchive email
+  document.querySelector('#email-archive').addEventListener('click', function() {
+    console.log(this.getAttribute('email-id'));
+  })
 
   // Set up buttons to hide alert messages
   document.querySelectorAll('.close').forEach((el) => {

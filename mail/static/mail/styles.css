@@ -82,7 +82,7 @@ MAILBOX VIEW
   position: absolute;
   top: 25%;
   right: 0;
-  font-weight: 200;
+  font-weight: 300;
 }
 
 .mailbox-subject{
@@ -94,18 +94,28 @@ EMAIL VIEW
 ===============================
 */
 
-#email-subject{
+#email-view {
+  position: relative;
 }
 
-#email-date{
-  font-weight: 200;
+#email-subject {
 }
 
-#email-recipients{
+#email-date {
+  font-weight: 300;
+}
+
+#email-recipients {
 
 }
 
-#email-body{
+#email-body {
+}
+
+#email-buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 /*=============================
