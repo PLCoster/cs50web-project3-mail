@@ -68,9 +68,15 @@ function view_email(emailObj) {
 function fetch_emails(mailbox) {
   // Fetch desired emails from specified mailbox using API
 
-  // Fetch desired emails
+  // Fetch desired emails, catch invalid mailboxes
   fetch(`/emails/${mailbox}`)
-  .then(response => response.json())
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Invalid Mailbox Accessed: Must be "inbox", "sent", "archive"')
+    }
+  })
   .then(emails => {
     console.log('Fetched Emails: ', emails);
     mailboxes[mailbox] = emails;
