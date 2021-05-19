@@ -43,6 +43,10 @@ MAILBOX VIEW
 #mailbox-name {
 }
 
+#mailbox-view {
+  margin: 10px 0 10px 0;
+}
+
 .mailbox-email {
   position: relative;
   margin: 0 0 2px 0;

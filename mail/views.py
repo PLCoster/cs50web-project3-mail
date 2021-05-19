@@ -106,6 +106,8 @@ def email(request, email_id):
     except Email.DoesNotExist:
         return JsonResponse({"error": "Email not found."}, status=404)
 
+    print(request, json.loads(request.body))
+
     # Return email contents
     if request.method == "GET":
         return JsonResponse(email.serialize())

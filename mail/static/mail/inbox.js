@@ -46,6 +46,11 @@ function view_email(emailObj) {
   // Hide any alerts
   hide_alerts();
 
+  // Update email status to read if not already:
+  if (!emailObj['read']) {
+    change_email_status('read', true, emailObj['id']);
+  }
+
   // Add email content to screen
   document.querySelector('#email-subject').innerHTML = emailObj['subject'];
   document.querySelector('#email-date').innerHTML = emailObj['timestamp']
@@ -73,8 +78,27 @@ function fetch_emails(mailbox) {
     }
   )
   .catch(error => {
-    console.log('Error:', error);
+    flash_alert('danger', error);
+  });
+}
+
+function change_email_status(status, flag, email_id) {
+  // Function to mark emails as read/unread or archived/unarchived
+  // Sends request to API to update database
+  // status: string 'read' or 'archived'
+  // flag: boolean
+  // email_id: integer ID of the email to change status
+
+  const body = {};
+  body[status] = flag;
+
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify(body)
   })
+  .catch(error => {
+    flash_alert('danger', error);
+  });
 }
 
 
