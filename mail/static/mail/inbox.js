@@ -102,6 +102,11 @@ function change_email_status(status, flag, email_id) {
     method: 'PUT',
     body: JSON.stringify(body)
   })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Email not found.')
+    }
+  })
   .catch(error => {
     flash_alert('danger', error);
   });
