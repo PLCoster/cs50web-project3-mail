@@ -116,10 +116,12 @@ function send_email() {
 
   console.log("Trying to Send Email");
 
-  // Get email details from form
+  // Get email details from form, with some error checking
   let recipients = document.querySelector('#compose-recipients').value;
   let subject = document.querySelector('#compose-subject').value;
+  if (subject === '') {subject = '(No Subject)'}
   let body = document.querySelector('#compose-body').value;
+  if (body === '') {body = '(No Email Body)'}
 
   // Check form for errors (nmissing addresses)
   if (recipients === '') {
@@ -140,9 +142,10 @@ function send_email() {
   .then(result => {
       // Print result
       console.log(result);
+      // Load sent mailbox and alert that email was successfully sent
+      load_mailbox('sent');
+      flash_alert('success', `Email sent successfully!`);
   });
-
-  console.log(recipients, subject, body);
 }
 
 function flash_alert(type, text) {
