@@ -5,3 +5,38 @@ textarea {
 .alert p {
     margin-bottom: 0;
 }
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+#mailbox-name {
+}
+
+.mailbox-email {
+  position: relative;
+  margin: 0 0 2px 0;
+  border: 1px solid black;
+}
+
+.mailbox-email:hover {
+  background-color: lightgrey;
+}
+
+.mailbox-sender{
+  margin: 5px;
+  font-weight: bold;
+}
+
+.mailbox-date{
+  position: absolute;
+  top: 30%;
+  right: 5%;
+  font-weight: 200;
+}
+
+.mailbox-subject{
+  margin: 5px;
+}
