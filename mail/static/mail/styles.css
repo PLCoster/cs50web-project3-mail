@@ -21,10 +21,6 @@ h2 {
   margin-top: 10px;
 }
 
-textarea {
-    min-height: 400px;
-}
-
 .alert p {
     margin: 3px 0 3px 0;
 }
@@ -53,12 +49,27 @@ MAILBOX VIEW
   border: 1px solid black;
 }
 
-.mailbox-email:hover {
-  background-color: lightgrey;
+.mailbox-email:hover, .mailbox-email.read:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+.mailbox-email.read, .mailbox-read-true {
+  background-color: #eee;
+}
+
+.mailbox-email div {
+  position: absolute;
+  width: 5px;
+  height: 100%;
+}
+
+.mailbox-read-false {
+  background-color: #007bff;
 }
 
 .mailbox-sender{
-  margin: 2px 5px 0 5px;
+  margin: 2px 5px 0 10px;
   font-weight: bold;
 }
 
@@ -71,7 +82,7 @@ MAILBOX VIEW
 }
 
 .mailbox-subject{
-  margin: 0 5px 2px 5px;
+  margin: 0 5px 2px 10px;
 }
 
 /*=============================
@@ -91,4 +102,17 @@ EMAIL VIEW
 }
 
 #email-body{
+}
+
+/*=============================
+COMPOSE VIEW
+===============================
+*/
+
+textarea {
+  min-height: 400px;
+}
+
+#compose-submit {
+  margin-top: 10px;
 }

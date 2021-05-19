@@ -2,6 +2,7 @@ let mailboxes = {};
 let curr_mailbox = undefined;
 let curr_email = undefined;
 
+
 function compose_email() {
   // Switches to compose email view
 
@@ -17,6 +18,7 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 }
+
 
 function load_mailbox(mailbox) {
   // Switch between mailbox views (Inbox, Sent, Archived)
@@ -37,6 +39,7 @@ function load_mailbox(mailbox) {
   document.querySelector('#mailbox-name').innerHTML = `${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}`;
 }
 
+
 function view_email(emailObj) {
   // View individual email when clicked on in a mailbox
 
@@ -56,6 +59,7 @@ function view_email(emailObj) {
 
 }
 
+
 function fetch_emails(mailbox) {
   // Fetch desired emails from specified mailbox using API
 
@@ -72,6 +76,7 @@ function fetch_emails(mailbox) {
     console.log('Error:', error);
   })
 }
+
 
 function display_mailbox(mailbox) {
   // Displays all emails in currently selected mailbox
@@ -90,7 +95,12 @@ function display_mailbox(mailbox) {
 
       const email = document.createElement('div');
       email.classList.add('mailbox-email');
-      email.addEventListener('click', () => view_email(emailObj))
+      if (emailObj['read'] === true) {email.classList.add('read')};
+      email.addEventListener('click', () => view_email(emailObj));
+
+      const status = document.createElement('div');
+      status.classList.add(`mailbox-read-${emailObj['read']}`);
+      email.append(status);
 
       const sender = document.createElement('p');
       sender.classList.add('mailbox-sender');
@@ -108,9 +118,10 @@ function display_mailbox(mailbox) {
       email.append(subject);
 
       mailboxView.append(email);
-  })
+    })
   }
 }
+
 
 function send_email() {
 
@@ -148,6 +159,7 @@ function send_email() {
   });
 }
 
+
 function flash_alert(type, text) {
   // Flashes desired type of alert with specified text
   // Valid alert types are 'success', 'warning' and 'danger'
@@ -157,10 +169,12 @@ function flash_alert(type, text) {
   alert.style.display = 'block';
 }
 
+
 function hide_alerts() {
   // Hides all flashed alert messages
   document.querySelectorAll('.alert').forEach((el) => el.style.display = 'none')
 }
+
 
 // Setup pages and buttons when page is loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -186,5 +200,3 @@ document.addEventListener('DOMContentLoaded', function() {
   // By default, load the inbox
   load_mailbox('inbox');
 });
-
-console.log('test')
