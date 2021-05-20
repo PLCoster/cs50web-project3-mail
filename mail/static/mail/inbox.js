@@ -99,13 +99,15 @@ function fetch_emails(mailbox) {
   });
 }
 
-function change_email_status(status, flag, email_id) {
+function change_email_status(status, flag, email_id, callback = null) {
   // Function to mark emails as read/unread or archived/unarchived
   // Sends request to API to update database
   // status: string 'read' or 'archived'
   // flag: boolean
   // email_id: integer ID of the email to change status
+  // callback: Optional callback to run when fetching completed and ok
 
+  console.log('Changing Email Status: ', status, flag, email_id, typeof flag, typeof email_id)
   const body = {};
   body[status] = flag;
 
@@ -114,9 +116,8 @@ function change_email_status(status, flag, email_id) {
     body: JSON.stringify(body)
   })
   .then(response => {
-    if (!response.ok) {
-      throw new Error('Email not found.')
-    }
+    if (!response.ok) {throw new Error('Email not found.');}
+    if (callback) {callback();}
   })
   .catch(error => {
     flash_alert('danger', error);
@@ -135,7 +136,7 @@ function display_mailbox(mailbox) {
 
   // If no emails, display text:
   if (mailboxes[mailbox].length === 0) {
-    flash_alert('warning', `No items currently in your ${mailbox} emails mailbox!`)
+    flash_alert('warning', `No items currently in your ${mailbox} mailbox!`)
   } else {
     // Build mailbox div for each email
     mailboxes[mailbox].forEach(emailObj => {
@@ -252,7 +253,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // When archive button is pressed, archive/unarchive email
   document.querySelector('#email-archive').addEventListener('click', function() {
-    console.log(this.getAttribute('email-id'));
+    // Archive the email, with callback to load inbox when done
+    let flag = this.getAttribute('email-archived') !== 'true';
+    let email_id = parseInt(this.getAttribute('email-id'));
+    const callback = function() {
+      load_mailbox('inbox');
+      flash_alert('success', 'Email has been archived!')
+    }
+    change_email_status('archived', flag, email_id, callback)
   })
 
   // Set up buttons to hide alert messages
