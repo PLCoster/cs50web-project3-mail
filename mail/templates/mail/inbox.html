@@ -45,15 +45,20 @@
     </div>
 
     <div id="email-view">
+      <!-- Email View Buttons-->
+      <div id="email-buttons" class="btn-toolbar float-right">
+        <button class="btn btn-sm btn-primary" id="email-reply" disabled><i class="fas fa-reply" aria-hidden="true"></i> Reply</button>
+        <button class="btn btn-sm btn-info" id="email-archive" disabled><i class="fas fa-archive" aria-hidden="true"></i>
+          Archive</button>
+      </div>
+
+      <!-- Email Details -->
       <h4 id="email-subject"></h4>
+      <h5 id="email-sender"></h5>
       <p id="email-date"></p>
       <p id="email-recipients"></p>
       <hr>
       <p id="email-body"></p>
-      <div id="email-buttons">
-        <button class="btn btn-sm btn-primary" id="email-archive" disabled><i class="fa fa-archive" aria-hidden="true"></i>
-          Archive</button>
-      </div>
     </div>
 
     <div id="compose-view">

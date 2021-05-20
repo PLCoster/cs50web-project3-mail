@@ -21,6 +21,14 @@ h2 {
   margin-top: 10px;
 }
 
+h5 {
+  margin-bottom: 0;
+}
+
+p {
+  margin-bottom: 5px;
+}
+
 .alert p {
     margin: 3px 0 3px 0;
 }
@@ -95,6 +103,7 @@ EMAIL VIEW
 */
 
 #email-view {
+  display: none;
   position: relative;
 }
 
@@ -106,22 +115,27 @@ EMAIL VIEW
 }
 
 #email-recipients {
-
+  margin-top: 10px;
 }
 
 #email-body {
 }
 
 #email-buttons {
-  position: absolute;
-  top: 0;
-  right: 0;
+}
+
+#email-archive, #email-reply {
+  margin: 0 0 0 4px;
 }
 
 /*=============================
 COMPOSE VIEW
 ===============================
 */
+
+#compose-view {
+  display: none;
+}
 
 textarea {
   min-height: 400px;
