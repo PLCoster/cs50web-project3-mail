@@ -51,6 +51,7 @@ def compose(request):
     # Get contents of email
     subject = data.get("subject", "")
     body = data.get("body", "")
+    print("Email Body:", body)
 
     # Create one email for each recipient, plus sender
     users = set()

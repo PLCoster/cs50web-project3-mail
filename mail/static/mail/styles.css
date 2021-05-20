@@ -119,6 +119,7 @@ EMAIL VIEW
 }
 
 #email-body {
+  white-space: pre-wrap;
 }
 
 #email-buttons {

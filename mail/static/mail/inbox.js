@@ -1,22 +1,30 @@
 let mailboxes = {};
 let curr_mailbox = undefined;
 let curr_email = undefined;
+let text_break = '-----------------------------------------------------'
 
 
-function compose_email() {
+function compose_email(prefill=false, recipients=null, subject=null, body=null) {
   // Switches to compose email view
-
   hide_alerts();
+
+  // Clear out composition fields if not prefilled
+  if (!prefill) {
+    document.querySelector('#compose-recipients').value = '';
+    document.querySelector('#compose-subject').value = '';
+    document.querySelector('#compose-body').value = '';
+  } else {
+    console.log(subject.slice(0,4))
+    if (subject.slice(0,4) !== 'Re: ') {subject = `Re: ${subject}`}
+    document.querySelector('#compose-recipients').value = recipients;
+    document.querySelector('#compose-subject').value = subject;
+    document.querySelector('#compose-body').value = body;
+  }
 
   // Show compose view and hide other views
   document.querySelector('#mailbox').style.display = 'none';
   document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
-
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
 }
 
 
@@ -58,11 +66,15 @@ function view_email(emailObj) {
   document.querySelector('#email-recipients').innerHTML = `To: ${emailObj['recipients'].join(', ')}`
   document.querySelector('#email-body').innerHTML = emailObj['body']
 
-  // Setup Archive Button and hide on Sent Mailbox:
-  const emailArchive = document.querySelector('#email-archive')
+  // Setup Reply/Forward/Archive Buttons (hide on Sent Mailbox):
+  const emailArchive = document.querySelector('#email-archive');
+  const reply = document.querySelector('#email-reply');
+  const buttons = [emailArchive, reply]
   if (curr_mailbox === 'sent') {
-    emailArchive.style.display = 'none';
-    emailArchive.disabled = true;
+    buttons.forEach(button => {
+      button.style.display = 'none';
+      button.disabled = true;
+    })
   } else {
     emailArchive.setAttribute('email-id', `${emailObj['id']}`)
     emailArchive.setAttribute('email-archived', `${emailObj['archived']}`)
@@ -71,8 +83,10 @@ function view_email(emailObj) {
     } else {
       emailArchive.innerHTML = `<i class="fas fa-archive" aria-hidden="true"> </i> Archive`
     }
-    emailArchive.style.display = 'block';
-    emailArchive.disabled = false;
+    buttons.forEach(button => {
+      button.style.display = 'block';
+      button.disabled = false;
+    })
   }
 
   // Show email view, hide other views
@@ -249,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
+  document.querySelector('#compose').addEventListener('click', () => compose_email(false));
 
   // When compose_email form is submitted, send email
   document.querySelector('#compose-form').addEventListener('submit', (event) => {
@@ -279,7 +293,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // When reply button is pressed, go to prefilled compose view
   document.querySelector('#email-reply').addEventListener('click', function() {
-      console.log('Function not finished!')
+      const sender = document.querySelector('#email-sender').innerHTML;
+      const recipients = document.querySelector('#email-recipients').innerHTML;
+      const subject = document.querySelector('#email-subject').innerHTML;
+      const date = document.querySelector('#email-date').innerHTML;
+      let body = `On ${date}, ${sender} wrote:\n${text_break}\n${document.querySelector('#email-body').innerHTML}\n${text_break}\n`;
+
+      compose_email(true, sender, subject, body);
   })
 
   // Set up buttons to hide alert messages
