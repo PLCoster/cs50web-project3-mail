@@ -65,6 +65,11 @@ function view_email(emailObj) {
   } else {
     emailArchive.setAttribute('email-id', `${emailObj['id']}`)
     emailArchive.setAttribute('email-archived', `${emailObj['archived']}`)
+    if(emailObj['archived']) {
+      emailArchive.innerHTML = `<i class="fa fa-archive" aria-hidden="true"></i> Unarchive`
+    } else {
+      emailArchive.innerHTML = `<i class="fa fa-archive" aria-hidden="true"></i> Archive`
+    }
     emailArchive.style.display = 'block';
     emailArchive.disabled = false;
   }
@@ -253,12 +258,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // When archive button is pressed, archive/unarchive email
   document.querySelector('#email-archive').addEventListener('click', function() {
-    // Archive the email, with callback to load inbox when done
+    // Archive the email, with callback to load inbox and alert when done
+
+    let text;
+    let mailbox;
     let flag = this.getAttribute('email-archived') !== 'true';
     let email_id = parseInt(this.getAttribute('email-id'));
+
+    if (flag) {
+      text = 'Email has been archived!'
+      mailbox = 'inbox'
+    } else {
+      text = 'Archived email moved back to inbox!'
+      mailbox = 'archive'
+    }
+
     const callback = function() {
-      load_mailbox('inbox');
-      flash_alert('success', 'Email has been archived!')
+      load_mailbox(mailbox);
+      flash_alert('success', text)
     }
     change_email_status('archived', flag, email_id, callback)
   })
