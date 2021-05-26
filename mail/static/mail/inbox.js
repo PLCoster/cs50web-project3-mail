@@ -4,7 +4,30 @@ let curr_email = undefined;
 let text_break = '-----------------------------------------------------'
 
 
-function compose_email(prefill=false, recipients=null, subject=null, body=null) {
+function sanitize_str(str) {
+  // Helper function for viewing emails inbox
+  // Sanitizes JS string to replace HTML special chars with escaped versions
+  let safe_str = str.replace(/&/g, '&amp;')
+                    .replace(/\"/g, '&quot;')
+                    .replace(/\'/g, '&#039;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+  return safe_str;
+}
+
+function unsanitize_str(str) {
+  // Helper function when using reply functionality
+  // Undoes sanitisation to display email text correctly inside HTML form
+  let form_str = str.replace(/&amp;/g, '&')
+                  .replace(/&quot;/g, '\"')
+                  .replace(/&#039;/g, '\'')
+                  .replace(/&lt;/g, '<')
+                  .replace(/&gt;/g, '>');
+  return form_str;
+}
+
+
+function compose_email(prefill=false, recipients='', subject='', body='') {
   // Switches to compose email view
   hide_alerts();
 
@@ -14,11 +37,12 @@ function compose_email(prefill=false, recipients=null, subject=null, body=null) 
     document.querySelector('#compose-subject').value = '';
     document.querySelector('#compose-body').value = '';
   } else {
-    console.log(subject.slice(0,4))
-    if (subject.slice(0,4) !== 'Re: ') {subject = `Re: ${subject}`}
-    document.querySelector('#compose-recipients').value = recipients;
-    document.querySelector('#compose-subject').value = subject;
-    document.querySelector('#compose-body').value = body;
+    // Add 'Re:' to subject line if not already there
+    if (subject.slice(0,4) !== 'Re: ') {subject = `Re: ${subject}`;}
+    document.querySelector('#compose-recipients').value = unsanitize_str(recipients);
+    document.querySelector('#compose-subject').value = unsanitize_str(subject);
+    document.querySelector('#compose-body').value = unsanitize_str(body);
+    console.log('Text for reply:', body)
   }
 
   // Show compose view and hide other views
@@ -59,12 +83,12 @@ function view_email(emailObj) {
     change_email_status('read', true, emailObj['id']);
   }
 
-  // Add email content to screen
-  document.querySelector('#email-subject').innerHTML = emailObj['subject'];
-  document.querySelector('#email-sender').innerHTML = emailObj['sender'];
-  document.querySelector('#email-date').innerHTML = emailObj['timestamp']
-  document.querySelector('#email-recipients').innerHTML = `To: ${emailObj['recipients'].join(', ')}`
-  document.querySelector('#email-body').innerHTML = emailObj['body']
+  // Add HTML-sanitised email content to screen
+  document.querySelector('#email-subject').innerHTML = sanitize_str(emailObj['subject']);
+  document.querySelector('#email-sender').innerHTML = sanitize_str(emailObj['sender']);
+  document.querySelector('#email-date').innerHTML = sanitize_str(emailObj['timestamp']);
+  document.querySelector('#email-recipients').innerHTML = sanitize_str(`To: ${emailObj['recipients'].join(', ')}`);
+  document.querySelector('#email-body').innerHTML = sanitize_str(emailObj['body']);
 
   // Setup Reply/Forward/Archive Buttons (hide on Sent Mailbox):
   const emailArchive = document.querySelector('#email-archive');
