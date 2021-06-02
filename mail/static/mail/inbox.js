@@ -15,6 +15,7 @@ function sanitize_str(str) {
   return safe_str;
 }
 
+
 function unsanitize_str(str) {
   // Helper function when using reply functionality
   // Undoes sanitisation to display email text correctly inside HTML form
@@ -24,6 +25,19 @@ function unsanitize_str(str) {
                   .replace(/&lt;/g, '<')
                   .replace(/&gt;/g, '>');
   return form_str;
+}
+
+function getDateStr(date=undefined) {
+  // Helper function that returns date string in
+  // 'Mon DD YYYY' format for displaying in inbox/comparing dates
+  // If called with no date, returns current date
+  if (!date) {
+    let todayStr = (new Date()).toString().slice(0, 15).replace(',', ' ');
+    return todayStr;
+  } else {
+    let dateStr = (new Date(date)).toString().slice(0, 15).replace(',', ' ');
+    return dateStr
+  }
 }
 
 
@@ -183,9 +197,33 @@ function display_mailbox(mailbox) {
     flash_alert('warning', `No items currently in your ${mailbox} mailbox!`)
   } else {
     // Build mailbox div for each email
-    mailboxes[mailbox].forEach(emailObj => {
-      console.log('Creating Email in Inbox');
 
+    // Get current date and date of newest email in mailbox
+    let today = getDateStr();
+    let inboxDate = getDateStr(mailboxes[mailbox][0]['timestamp']);
+
+    // If newest email is from today, add 'Today' divider, otherwise add date
+    const dateDiv = document.createElement('div');
+    if (inboxDate === today) {
+      dateDiv.innerHTML = 'Today';
+    } else {
+      dateDiv.innerHTML = inboxDate;
+    }
+    mailboxView.append(dateDiv);
+
+    // Iterate through all emails in mailbox, and add then to view
+    mailboxes[mailbox].forEach(emailObj => {
+
+      // If email has new date, add date divider:
+      let mailDate = getDateStr(emailObj['timestamp']);
+      if (mailDate !== inboxDate) {
+        inboxDate = mailDate;
+        const dateDiv = document.createElement('div');
+        dateDiv.innerHTML = inboxDate;
+        mailboxView.append(dateDiv);
+      }
+
+      // Build email element and add to inbox view
       const email = document.createElement('div');
       email.classList.add('mailbox-email');
       if (emailObj['read'] === true) {
