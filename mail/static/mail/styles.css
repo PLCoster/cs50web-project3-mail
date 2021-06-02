@@ -125,8 +125,8 @@ EMAIL VIEW
 #email-buttons {
 }
 
-#email-archive, #email-reply {
-  margin: 0 0 0 4px;
+#email-archive, #email-reply, #email-reply-all, #email-forward {
+  margin: 0 0 10px 4px;
 }
 
 /*=============================

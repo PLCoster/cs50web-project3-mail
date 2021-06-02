@@ -65,6 +65,25 @@ function compose_email(prefill=false, recipients='', subject='', body='') {
   document.querySelector('#compose-view').style.display = 'block';
 }
 
+function prefill_compose(type="reply") {
+  // Prefills compose email view then switches to view
+  let sender;
+  if (type === "reply") {
+    sender = document.querySelector('#email-sender').innerHTML;
+  } else if (type === "reply-all") {
+    sender = document.querySelector('#email-recipients').innerHTML.slice(4);
+  } else {
+    sender = "";
+  }
+
+  const subject = document.querySelector('#email-subject').innerHTML;
+  const date = document.querySelector('#email-date').innerHTML;
+  let body = `On ${date}, ${sender} wrote:\n${text_break}\n${document.querySelector('#email-body').innerHTML}\n${text_break}\n`;
+
+  compose_email(true, sender, subject, body);
+}
+
+
 
 function load_mailbox(mailbox) {
   // Switch between mailbox views (Inbox, Sent, Archived)
@@ -107,7 +126,9 @@ function view_email(emailObj) {
   // Setup Reply/Forward/Archive Buttons (hide on Sent Mailbox):
   const emailArchive = document.querySelector('#email-archive');
   const reply = document.querySelector('#email-reply');
-  const buttons = [emailArchive, reply]
+  const replyAll = document.querySelector('#email-reply-all');
+  const forward = document.querySelector('#email-forward');
+  const buttons = [emailArchive, reply, replyAll, forward];
   if (curr_mailbox === 'sent') {
     buttons.forEach(button => {
       button.style.display = 'none';
@@ -353,16 +374,10 @@ document.addEventListener('DOMContentLoaded', function() {
     change_email_status('archived', flag, email_id, callback)
   })
 
-  // When reply button is pressed, go to prefilled compose view
-  document.querySelector('#email-reply').addEventListener('click', function() {
-      const sender = document.querySelector('#email-sender').innerHTML;
-      const recipients = document.querySelector('#email-recipients').innerHTML;
-      const subject = document.querySelector('#email-subject').innerHTML;
-      const date = document.querySelector('#email-date').innerHTML;
-      let body = `On ${date}, ${sender} wrote:\n${text_break}\n${document.querySelector('#email-body').innerHTML}\n${text_break}\n`;
-
-      compose_email(true, sender, subject, body);
-  })
+  // When reply buttons are pressed, go to prefilled compose view
+  document.querySelector('#email-reply').addEventListener('click', function() {prefill_compose()});
+  document.querySelector('#email-reply-all').addEventListener('click', function() {prefill_compose("reply-all")});
+  document.querySelector('#email-forward').addEventListener('click', function() {prefill_compose("forward")});
 
   // Set up buttons to hide alert messages
   document.querySelectorAll('.close').forEach((el) => {
