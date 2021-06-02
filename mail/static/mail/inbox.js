@@ -4,6 +4,22 @@ let curr_email = undefined;
 let text_break = '-----------------------------------------------------'
 
 
+function flash_alert(type, text) {
+  // Flashes desired type of alert with specified text
+  // Valid alert types are 'success', 'warning' and 'danger'
+  hide_alerts();
+  let alert = document.querySelector(`.alert-${type}`)
+  alert.children[0].innerHTML = text;
+  alert.style.display = 'block';
+}
+
+
+function hide_alerts() {
+  // Hides all flashed alert messages
+  document.querySelectorAll('.alert').forEach((el) => el.style.display = 'none')
+}
+
+
 function sanitize_str(str) {
   // Helper function for viewing emails inbox
   // Sanitizes JS string to replace HTML special chars with escaped versions
@@ -26,6 +42,7 @@ function unsanitize_str(str) {
                   .replace(/&gt;/g, '>');
   return form_str;
 }
+
 
 function getDateStr(date=undefined) {
   // Helper function that returns date string in
@@ -65,6 +82,7 @@ function compose_email(prefill=false, recipients='', subject='', body='') {
   document.querySelector('#compose-view').style.display = 'block';
 }
 
+
 function prefill_compose(type="reply") {
   // Prefills compose email view then switches to view
   let sender;
@@ -82,7 +100,6 @@ function prefill_compose(type="reply") {
 
   compose_email(true, sender, subject, body);
 }
-
 
 
 function load_mailbox(mailbox) {
@@ -177,6 +194,7 @@ function fetch_emails(mailbox) {
     flash_alert('danger', error);
   });
 }
+
 
 function change_email_status(status, flag, email_id, callback = null) {
   // Function to mark emails as read/unread or archived/unarchived
@@ -314,28 +332,17 @@ function send_email() {
   })
   .then(response => response.json())
   .then(result => {
-      // Print result
-      console.log(result);
-      // Load sent mailbox and alert that email was successfully sent
-      load_mailbox('sent');
-      flash_alert('success', `Email sent successfully!`);
-  });
-}
-
-
-function flash_alert(type, text) {
-  // Flashes desired type of alert with specified text
-  // Valid alert types are 'success', 'warning' and 'danger'
-  hide_alerts();
-  let alert = document.querySelector(`.alert-${type}`)
-  alert.children[0].innerHTML = text;
-  alert.style.display = 'block';
-}
-
-
-function hide_alerts() {
-  // Hides all flashed alert messages
-  document.querySelectorAll('.alert').forEach((el) => el.style.display = 'none')
+      // If no errors then load sent emails, email sent successfully
+      if(!result.hasOwnProperty('error')) {
+        // Load sent mailbox and alert that email was successfully sent
+        load_mailbox('sent');
+        flash_alert('success', `Email sent successfully!`);
+      }
+      // If Errors, remain on compose page and flash warning
+      else {
+        flash_alert('warning', result['error'] + ' Please check recipients and try again.')
+      }
+  })
 }
 
 
