@@ -265,7 +265,7 @@ function display_mailbox(mailbox) {
       // Build email element and add to inbox view
       const email = document.createElement('div');
       email.classList.add('mailbox-email');
-      if (emailObj['read'] === true) {
+      if (emailObj['read']) {
         email.classList.add('read')
       } else {
         unread++;
@@ -282,8 +282,18 @@ function display_mailbox(mailbox) {
       email.append(sender);
 
       const date = document.createElement('p');
+      const readButton = document.createElement('span');
+      readButton.classList.add('mailbox-read');
+      readButton.onclick = function (event) {inbox_read_switch(event, emailObj['id'])};
+      if (emailObj['read']){
+        readButton.innerHTML = '<i class="fas fa-envelope" aria-hidden="true"></i> '
+      } else {
+        console.log(emailObj['read']);
+        readButton.innerHTML = '<i class="fas fa-envelope-open"></i> '
+      }
       date.classList.add('mailbox-date');
       date.innerHTML = emailObj['timestamp'];
+      date.prepend(readButton);
       email.append(date);
 
       const subject = document.createElement('p');
@@ -292,8 +302,30 @@ function display_mailbox(mailbox) {
       email.append(subject);
 
       mailboxView.append(email);
-    })
+    });
   }
+
+  function inbox_read_switch(event, email_id) {
+    // Controls functionality of read/unread flags on mailbox
+    event.stopPropagation();
+    console.log('Change Read Status clicked');
+    const email = event.target.closest(".mailbox-email");
+    let flag;
+    if (email.classList[1] === "read") {
+      flag = false;
+    } else {
+      flag = true;
+    }
+
+    const callback = function() {
+      load_mailbox(curr_mailbox);
+      flash_alert('success', 'Email Read Status Changed');
+    }
+
+    // Change flag on email, reload inbox:
+    change_email_status('read', flag, email_id, callback)
+
+  };
 
   // Add number of unread emails to mailbox name, if not sent mailbox
   if (mailbox != 'sent') {
@@ -305,8 +337,7 @@ function display_mailbox(mailbox) {
 
 
 function send_email() {
-
-  console.log("Trying to Send Email");
+  // Sends email from compose mail screen to server
 
   // Get email details from form, with some error checking
   let recipients = document.querySelector('#compose-recipients').value;
