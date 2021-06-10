@@ -73,7 +73,6 @@ function compose_email(prefill=false, recipients='', subject='', body='') {
     document.querySelector('#compose-recipients').value = unsanitize_str(recipients);
     document.querySelector('#compose-subject').value = unsanitize_str(subject);
     document.querySelector('#compose-body').value = unsanitize_str(body);
-    console.log('Text for reply:', body)
   }
 
   // Show compose view and hide other views
@@ -185,7 +184,6 @@ function fetch_emails(mailbox) {
     }
   })
   .then(emails => {
-    console.log('Fetched Emails: ', emails);
     mailboxes[mailbox] = emails;
     display_mailbox(mailbox);
     }
@@ -204,7 +202,6 @@ function change_email_status(status, flag, email_id, callback = null) {
   // email_id: integer ID of the email to change status
   // callback: Optional callback to run when fetching completed and ok
 
-  console.log('Changing Email Status: ', status, flag, email_id, typeof flag, typeof email_id)
   const body = {};
   body[status] = flag;
 
@@ -213,11 +210,11 @@ function change_email_status(status, flag, email_id, callback = null) {
     body: JSON.stringify(body)
   })
   .then(response => {
-    if (!response.ok) {throw new Error('Email not found.');}
-    if (callback) {callback();}
+    if (!response.ok) {flash_alert('danger', 'Error when trying to change email status')}
+    else if (callback) {callback();}
   })
   .catch(error => {
-    flash_alert('danger', error);
+    console.log(error)
   });
 }
 
@@ -226,7 +223,6 @@ function display_mailbox(mailbox) {
   // Displays all emails in currently selected mailbox
   // Counts and displays number of unread emails
 
-  console.log('Displaying Mailbox')
   const mailboxView = document.querySelector('#mailbox-view');
   mailboxView.innerHTML = '';
   let unread = 0;
@@ -281,19 +277,19 @@ function display_mailbox(mailbox) {
       sender.innerHTML = emailObj['sender'];
       email.append(sender);
 
+      // Create Date component of email and read/archive quick buttons
       const date = document.createElement('p');
       const readButton = document.createElement('span');
-      readButton.classList.add('mailbox-read');
       readButton.onclick = function (event) {inbox_read_switch(event, emailObj['id'])};
       if (emailObj['read']){
-        readButton.innerHTML = '<i class="fas fa-envelope" aria-hidden="true"></i> '
+        readButton.innerHTML = '<i class="fas fa-envelope-open"> </i> &emsp;'
       } else {
-        console.log(emailObj['read']);
-        readButton.innerHTML = '<i class="fas fa-envelope-open"></i> '
+        //console.log(emailObj['read']);
+        readButton.innerHTML = '<i class="fas fa-envelope"></i> &emsp;'
       }
       date.classList.add('mailbox-date');
       date.innerHTML = emailObj['timestamp'];
-      date.prepend(readButton);
+      date.prepend(readButton)
       email.append(date);
 
       const subject = document.createElement('p');
@@ -308,7 +304,6 @@ function display_mailbox(mailbox) {
   function inbox_read_switch(event, email_id) {
     // Controls functionality of read/unread flags on mailbox
     event.stopPropagation();
-    console.log('Change Read Status clicked');
     const email = event.target.closest(".mailbox-email");
     let flag;
     if (email.classList[1] === "read") {
@@ -319,7 +314,6 @@ function display_mailbox(mailbox) {
 
     const callback = function() {
       load_mailbox(curr_mailbox);
-      flash_alert('success', 'Email Read Status Changed');
     }
 
     // Change flag on email, reload inbox:
@@ -419,7 +413,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Set up buttons to hide alert messages
   document.querySelectorAll('.close').forEach((el) => {
-    console.log(el);
     el.addEventListener('click', function() {this.parentElement.style.display = 'none'})
   });
 
