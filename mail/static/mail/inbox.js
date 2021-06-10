@@ -309,14 +309,14 @@ function display_mailbox(mailbox) {
       const readButton = document.createElement('span');
       readButton.onclick = function (event) {inbox_read_switch(event, emailObj['id'])};
       if (emailObj['read']){
-        readButton.innerHTML = '<i class="fas fa-envelope-open"> </i> &emsp;'
+        readButton.innerHTML = '&emsp;<i class="fas fa-envelope-open"> </i> &emsp;'
       } else {
-        readButton.innerHTML = '<i class="fas fa-envelope"></i> &emsp;'
+        readButton.innerHTML = '&emsp;<i class="fas fa-envelope"></i> &emsp;'
       }
       date.classList.add('mailbox-date');
       date.innerHTML = getDateStr(emailObj['timestamp'], true);
-      date.prepend(archiveButton)
-      date.prepend(readButton)
+      date.append(readButton)
+      date.append(archiveButton)
       email.append(date);
 
       const subject = document.createElement('p');
@@ -382,7 +382,6 @@ function send_email() {
   let subject = document.querySelector('#compose-subject').value;
 
   let body = document.querySelector('#compose-body').value;
-
 
   // Check form for errors (missing addresses)
   if (recipients === '') {
