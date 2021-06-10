@@ -43,13 +43,6 @@ function unsanitize_str(str) {
   return form_str;
 }
 
-function getUTCDate(date=undefined) {
-  // Function to convert UTC email timestamp into JS Date object
-  let local = new Date(new Date().toLocaleString())
-  console.log(local.toString())
-  console.log(new Date().toLocaleString())
-}
-
 
 function getDateStr(date=undefined, time=false) {
   // Helper function that returns date string in local time
@@ -258,6 +251,7 @@ function display_mailbox(mailbox) {
 
     // If newest email is from today, add 'Today' divider, otherwise add date
     const dateDiv = document.createElement('div');
+    dateDiv.classList.add("date-divider");
     if (inboxDate === today) {
       dateDiv.innerHTML = 'Today';
     } else {
@@ -274,6 +268,7 @@ function display_mailbox(mailbox) {
       if (mailDate !== inboxDate) {
         inboxDate = mailDate;
         const dateDiv = document.createElement('div');
+        dateDiv.classList.add("date-divider");
         dateDiv.innerHTML = inboxDate;
         mailboxView.append(dateDiv);
       }
@@ -417,6 +412,35 @@ function send_email() {
 }
 
 
+function search() {
+  // Function that finds emails containing the string in the search bar
+  // in either sender or subject.
+
+  // Get current search bar value:
+  let query = document.querySelector('#search').value.toLowerCase();
+
+  // Find all emails containing query string and display them:
+  let emails = document.querySelectorAll('.mailbox-email');
+
+  // Hide date dividers, and all emails not containining search:
+  document.querySelectorAll('.date-divider').forEach(el => el.style.display = 'none')
+
+  emails.forEach(el => {
+    el.style.display = 'block';
+    let sender = el.querySelector('.mailbox-sender').innerHTML.toLowerCase();
+    let subject = el.querySelector('.mailbox-subject').innerHTML.toLowerCase()
+    if (!subject.includes(query) && !sender.includes(query)) {
+      el.style.display = 'none'};
+    });
+}
+
+function clearSearch() {
+  // Function that clears search bar when X is clicked
+  document.querySelector('#search').value = '';
+  search();
+}
+
+
 // Setup pages and buttons when page is loaded
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -461,6 +485,10 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.close').forEach((el) => {
     el.addEventListener('click', function() {this.parentElement.style.display = 'none'})
   });
+
+  // Set up search bar buttons:
+  document.querySelector('#search').addEventListener('keyup', search)
+  document.querySelector('#search-clear').addEventListener('click', clearSearch)
 
   // By default, load the inbox
   load_mailbox('inbox');

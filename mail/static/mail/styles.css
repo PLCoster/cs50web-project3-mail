@@ -17,12 +17,13 @@ body {
   margin: 0 0 0 0;
 }
 
-h2 {
-  margin-top: 10px;
+h2, h3 {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 h5 {
-  margin-bottom: 0;
+  margin-bottom: 0px;
 }
 
 p {
@@ -59,6 +60,18 @@ MAILBOX VIEW
 
 #mailbox-view {
   margin: 10px 0 10px 0;
+}
+
+#search-form {
+  width: 50%;
+}
+
+#search-clear{
+  line-height: 1.8;
+}
+
+#search-clear:hover{
+  cursor: pointer;
 }
 
 .mailbox-email {

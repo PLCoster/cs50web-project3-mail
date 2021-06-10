@@ -38,14 +38,26 @@
       </div>
     </div>
 
+    <!-- MailBox View-->
     <div id="mailbox">
       <h3 id="mailbox-name"></h3>
+      <form id="search-form">
+          <label class="sr-only" for="search">Search Emails</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-search"></i></div>
+            </div>
+            <input type="text" class="form-control form-control-sm" id="search" placeholder="Search Emails by Sender or Subject" autocomplete="off"> &emsp;
+            <span id="search-clear"><strong>X</strong></span>
+        </div>
+      </form>
+      <!-- Main Mailbox -->
       <div id="mailbox-view">
       </div>
     </div>
 
+    <!-- Individual Email View-->
     <div id="email-view">
-
       <!--Email View Archive Buttons-->
       <div id="email-archive-buttons" class="btn-toolbar float-right">
         <button class="btn btn-sm btn-info" id="email-archive" disabled><i class="fas fa-archive" aria-hidden="true"></i>
