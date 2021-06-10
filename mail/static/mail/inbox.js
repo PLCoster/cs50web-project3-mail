@@ -43,17 +43,34 @@ function unsanitize_str(str) {
   return form_str;
 }
 
+function getUTCDate(date=undefined) {
+  // Function to convert UTC email timestamp into JS Date object
+  let local = new Date(new Date().toLocaleString())
+  console.log(local.toString())
+  console.log(new Date().toLocaleString())
+}
 
-function getDateStr(date=undefined) {
-  // Helper function that returns date string in
+
+function getDateStr(date=undefined, time=false) {
+  // Helper function that returns date string in local time
   // 'Mon DD YYYY' format for displaying in inbox/comparing dates
   // If called with no date, returns current date
+  // If called with time flag === true, then includes local time in str
   if (!date) {
-    let todayStr = (new Date()).toString().slice(0, 15).replace(',', ' ');
-    return todayStr;
+    let todayDate = new Date();
+    if (!time) {
+      return todayDate.toString().slice(0, 15).replace(',', ' ');
+    } else {
+      return todayDate.toString().slice(0, 21)
+    }
   } else {
-    let dateStr = (new Date(date)).toString().slice(0, 15).replace(',', ' ');
-    return dateStr
+    let givenDate = new Date(date);
+    givenDate.setHours(givenDate.getHours() - givenDate.getTimezoneOffset()/60);
+    if (!time) {
+      return givenDate.toString().slice(0, 15).replace(',', ' ');
+    } else {
+      return givenDate.toString().slice(0,21)
+    }
   }
 }
 
@@ -135,7 +152,7 @@ function view_email(emailObj) {
   // Add HTML-sanitised email content to screen
   document.querySelector('#email-subject').innerHTML = sanitize_str(emailObj['subject']);
   document.querySelector('#email-sender').innerHTML = sanitize_str(emailObj['sender']);
-  document.querySelector('#email-date').innerHTML = sanitize_str(emailObj['timestamp']);
+  document.querySelector('#email-date').innerHTML = sanitize_str(getDateStr(emailObj['timestamp'], true));
   document.querySelector('#email-recipients').innerHTML = sanitize_str(`To: ${emailObj['recipients'].join(', ')}`);
   document.querySelector('#email-body').innerHTML = sanitize_str(emailObj['body']);
 
@@ -253,6 +270,7 @@ function display_mailbox(mailbox) {
 
       // If email has new date, add date divider:
       let mailDate = getDateStr(emailObj['timestamp']);
+      console.log(emailObj['timestamp'], new Date());
       if (mailDate !== inboxDate) {
         inboxDate = mailDate;
         const dateDiv = document.createElement('div');
@@ -295,11 +313,10 @@ function display_mailbox(mailbox) {
       if (emailObj['read']){
         readButton.innerHTML = '<i class="fas fa-envelope-open"> </i> &emsp;'
       } else {
-        //console.log(emailObj['read']);
         readButton.innerHTML = '<i class="fas fa-envelope"></i> &emsp;'
       }
       date.classList.add('mailbox-date');
-      date.innerHTML = emailObj['timestamp'];
+      date.innerHTML = getDateStr(emailObj['timestamp'], true);
       date.prepend(archiveButton)
       date.prepend(readButton)
       email.append(date);
