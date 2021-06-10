@@ -2,6 +2,7 @@ let mailboxes = {};
 let curr_mailbox = undefined;
 let curr_email = undefined;
 let text_break = '-----------------------------------------------------'
+let force_send = false;
 
 
 function flash_alert(type, text) {
@@ -71,6 +72,9 @@ function getDateStr(date=undefined, time=false) {
 function compose_email(prefill=false, recipients='', subject='', body='') {
   // Switches to compose email view
   hide_alerts();
+
+  // Set flag for forcing incomplete emails:
+  force_send = false;
 
   // Clear out composition fields if not prefilled
   if (!prefill) {
@@ -264,7 +268,6 @@ function display_mailbox(mailbox) {
 
       // If email has new date, add date divider:
       let mailDate = getDateStr(emailObj['timestamp']);
-      console.log(emailObj['timestamp'], new Date());
       if (mailDate !== inboxDate) {
         inboxDate = mailDate;
         const dateDiv = document.createElement('div');
@@ -377,15 +380,27 @@ function send_email() {
   // Get email details from form, with some error checking
   let recipients = document.querySelector('#compose-recipients').value;
   let subject = document.querySelector('#compose-subject').value;
-  if (subject === '') {subject = '(No Subject)'}
-  let body = document.querySelector('#compose-body').value;
-  if (body === '') {body = '(No Email Body)'}
 
-  // Check form for errors (nmissing addresses)
+  let body = document.querySelector('#compose-body').value;
+
+
+  // Check form for errors (missing addresses)
   if (recipients === '') {
     flash_alert('warning', "Please add a valid recipient!")
     return false;
   }
+
+  // If no subject or body, then flag to user before allowing to send?
+  if ((!subject || !body) && !force_send) {
+    let text = 'Current email has no subject and/or body. Click Send again to send anyway.';
+    force_send = true;
+    flash_alert('warning', text);
+    return;
+  }
+
+  // If no subject or body after forcing send, replace with string
+  if (subject === '') {subject = '(No Subject)'}
+  if (body === '') {body = '(No Email Body)'}
 
   // If no errors, send email to server via API POST request
   fetch('/emails', {
