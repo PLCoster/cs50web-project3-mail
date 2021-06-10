@@ -132,3 +132,4 @@ python manage.py makemigrations mail
 python manage.py migrate
 ```
 * Run the app locally: `python manage.py runserver`
+* Two separate accounts/logins will need to be created in order to send emails back and forth. A private browser window can be logged into a separate account.
