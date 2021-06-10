@@ -295,28 +295,32 @@ function display_mailbox(mailbox) {
       sender.innerHTML = emailObj['sender'];
       email.append(sender);
 
-      // Create Date component of email and read/archive quick buttons
+      // Create Date component
       const date = document.createElement('p');
-
-      const archiveButton = document.createElement('span');
-      archiveButton.onclick = function(event) {inbox_archive_switch(event, emailObj['id'], emailObj['archived'])};
-      if (emailObj['archived']) {
-        archiveButton.innerHTML = `<i class="fas fa-inbox"> </i> &emsp;`
-      } else {
-        archiveButton.innerHTML = `<i class="fas fa-archive"> </i> &emsp;`
-      }
-
-      const readButton = document.createElement('span');
-      readButton.onclick = function (event) {inbox_read_switch(event, emailObj['id'])};
-      if (emailObj['read']){
-        readButton.innerHTML = '&emsp;<i class="fas fa-envelope-open"> </i> &emsp;'
-      } else {
-        readButton.innerHTML = '&emsp;<i class="fas fa-envelope"></i> &emsp;'
-      }
       date.classList.add('mailbox-date');
       date.innerHTML = getDateStr(emailObj['timestamp'], true);
-      date.append(readButton)
-      date.append(archiveButton)
+
+      // Add quick settings for read/unread and archive if not sent mailbox
+      if (curr_mailbox !== 'sent') {
+        const archiveButton = document.createElement('span');
+        archiveButton.onclick = function(event) {inbox_archive_switch(event, emailObj['id'], emailObj['archived'])};
+        if (emailObj['archived']) {
+          archiveButton.innerHTML = `<i class="fas fa-inbox"> </i> &emsp;`
+        } else {
+          archiveButton.innerHTML = `<i class="fas fa-archive"> </i> &emsp;`
+        }
+
+        const readButton = document.createElement('span');
+        readButton.onclick = function (event) {inbox_read_switch(event, emailObj['id'])};
+        if (emailObj['read']){
+          readButton.innerHTML = '&emsp;<i class="fas fa-envelope-open"> </i> &emsp;'
+        } else {
+          readButton.innerHTML = '&emsp;<i class="fas fa-envelope"></i> &emsp;'
+        }
+        date.append(readButton)
+        date.append(archiveButton)
+      }
+
       email.append(date);
 
       const subject = document.createElement('p');
