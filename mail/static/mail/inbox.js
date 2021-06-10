@@ -422,9 +422,14 @@ function search() {
   // Find all emails containing query string and display them:
   let emails = document.querySelectorAll('.mailbox-email');
 
-  // Hide date dividers, and all emails not containining search:
-  document.querySelectorAll('.date-divider').forEach(el => el.style.display = 'none')
+  // Hide date dividers if query, otherwise display all date dividers
+  if (query) {
+    document.querySelectorAll('.date-divider').forEach(el => el.style.display = 'none')
+  } else {
+    document.querySelectorAll('.date-divider').forEach(el => el.style.display = 'block')
+  }
 
+  // Find emails containing the search query and display them
   emails.forEach(el => {
     el.style.display = 'block';
     let sender = el.querySelector('.mailbox-sender').innerHTML.toLowerCase();
@@ -435,7 +440,7 @@ function search() {
 }
 
 function clearSearch() {
-  // Function that clears search bar when X is clicked
+  // Function that clears search and restores inbox when X is clicked
   document.querySelector('#search').value = '';
   search();
 }
