@@ -29,8 +29,14 @@ p {
   margin-bottom: 5px;
 }
 
+
 .alert p {
     margin: 3px 0 3px 0;
+}
+
+.alert-close {
+  display: inline-block;
+  float: right;
 }
 
 /*=============================

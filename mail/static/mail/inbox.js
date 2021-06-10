@@ -211,7 +211,9 @@ function change_email_status(status, flag, email_id, callback = null) {
   })
   .then(response => {
     if (!response.ok) {flash_alert('danger', 'Error when trying to change email status')}
-    else if (callback) {callback();}
+    else if (callback) {
+      callback();
+    }
   })
   .catch(error => {
     console.log(error)
@@ -279,6 +281,15 @@ function display_mailbox(mailbox) {
 
       // Create Date component of email and read/archive quick buttons
       const date = document.createElement('p');
+
+      const archiveButton = document.createElement('span');
+      archiveButton.onclick = function(event) {inbox_archive_switch(event, emailObj['id'], emailObj['archived'])};
+      if (emailObj['archived']) {
+        archiveButton.innerHTML = `<i class="fas fa-inbox"> </i> &emsp;`
+      } else {
+        archiveButton.innerHTML = `<i class="fas fa-archive"> </i> &emsp;`
+      }
+
       const readButton = document.createElement('span');
       readButton.onclick = function (event) {inbox_read_switch(event, emailObj['id'])};
       if (emailObj['read']){
@@ -289,6 +300,7 @@ function display_mailbox(mailbox) {
       }
       date.classList.add('mailbox-date');
       date.innerHTML = emailObj['timestamp'];
+      date.prepend(archiveButton)
       date.prepend(readButton)
       email.append(date);
 
@@ -299,6 +311,25 @@ function display_mailbox(mailbox) {
 
       mailboxView.append(email);
     });
+  }
+
+  function inbox_archive_switch(event, email_id, archived) {
+    // Controls functionality of archive/unarchive flags on mailbox
+    event.stopPropagation();
+    let flag = !archived;
+    let text;
+    if (!flag) {
+      text = 'Email unarchived and returned to inbox.'
+    } else {
+      text = 'Email has been archived.'
+    }
+
+    const callback = function() {
+      load_mailbox(curr_mailbox);
+      flash_alert('success', text);
+    }
+    // Change flag on email, reload inbox:
+    change_email_status('archived', flag, email_id, callback);
   }
 
   function inbox_read_switch(event, email_id) {
@@ -315,10 +346,8 @@ function display_mailbox(mailbox) {
     const callback = function() {
       load_mailbox(curr_mailbox);
     }
-
     // Change flag on email, reload inbox:
     change_email_status('read', flag, email_id, callback)
-
   };
 
   // Add number of unread emails to mailbox name, if not sent mailbox
