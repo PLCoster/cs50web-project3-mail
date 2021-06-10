@@ -88,7 +88,38 @@ Using JavaScript, HTML, and CSS, complete the implementation of your single-page
   * Pre-fill the body of the email with a line like "On Jan 1 2020, 12:00 AM foo@example.com wrote:" followed by the original text of the email.
 
 ### Project Writeup:
-TODO
+
+This project is a single-page email client app, built using HTML, Javascript and CSS.
+
+The front-end contacts a simple backend built using Django, which acts as an email server. Sent emails are sent to the server to be stored in a simple SQL database, and requests can be sent to the server to get a current users emails, as well as alter the status of individual emails (read/unread and archived/unarchived).
+
+The front-end functionality of the email app is contained in inbox.js, which contains various functions that request emails from the server, display them individually or in their respective inbox, etc:
+
+After creating a user account and logging into the app (handled by Django back-end), users are presented with their email inbox, via the **Mailbox View**:
+  - Buttons at the top of the screen allow users to switch between viewing their **Inbox**, **Sent** and **Archived** mailboxes.
+  - The **Inbox** mailbox contains all emails sent to the user that are not current archived. Next to the title 'Inbox', the number of unread emails is displayed in parenthesis.
+  - The **Sent** mailbox contains all emails sent by the user.
+  - The **Archived** mailbox contains all emails sent to the user that were then subsequently archived by the user.
+  - In each mailbox, emails are displayed showing the email sender, the subject of the email, and the time that the email was sent (adjusted to local time of the user).
+    - Unread emails are highlighted in white with a blue marker on the left hand edge. Read emails have a light grey background.
+    - Each email also has two quick flags that can be set, to mark an unread email as read (or vica versa), and to archive/unarchive an email. The icons for the quick flags change depending on the status of the email.
+    - Any email in the inbox can be clicked on to be taken to the **Email View** to see the full details of an individual email.
+  - Emails in the inbox are broken up by date-dividers, indicating to the user groups of emails that came on the same date for quick reference.
+  - Each mailbox also includes a search bar at the top. Users can type in this search bar to enter a query string. Only emails that contain the query string in their 'sender' or 'subject' attributes will be displayed. If the search bar is cleared manually, or by clicking on the 'X' next to the search bar, the full mailbox view is restored.
+
+Clicking on an email in the **Mailbox View** takes users to the **Email View** for that particular email:
+  - In the **Email View**, the email subject, the sender of the email, and the time of sending, and a list of all recipients of the email are shown. Underneath, the body of the email is shown.
+  - The **Email View** includes buttons allowing a user to reply to the email they are viewing, with the options of 'Reply', 'Reply-All' and 'Forward'. Clicking on any of these buttons takes the user to the **Compose View**, with a pre-filled reply email. The exact nature of the pre-filled email depends on which option (Reply, Reply-All, Forward) was selected.
+  - The **Email View** also contains an 'Archive' button allowing users to archive the email they are currently viewing. If the users are viewing an email that is currently archived, this button is instead an 'Unarchive' button, allowing users to return the email from their archived emails to the inbox. Archiving or Unarchiving an email in this way returns the user to the inbox with a notification that the email has been archived or unarchived successfully.
+  - If the current email being viewed is an email the user sent themselves, none of these options (Reply, Reply-All, Forward, Archive) are displayed, since the user would largely be replying to themselves!
+
+Either clicking on the compose button in the main app menu, or clicking one of the reply options when viewing an email, will take the user to the **Compose View**:
+  - In the **Compose View** users can fill out an email with the recipients (using comma separated list), email subject and body. When these fields are filled in the user can click the send button to send the email to the server.
+    - If the **Compose View** was reached by replying to another email, the body of the email being composed is prefilled with the contents of the previous email body, as is the subject of the email being composed. The recipients field is also pre-filled according to the reply option selected.
+  - When a message is sent, the server checks if the recipients are all valid. If they are not, the user remains on the **Compose View** with a warning indicating that one of the recipients could not be found.
+  - Similarly if the email subject or body is empty when trying to be sent, the users are initially warned that these areas are blank. Users then have the option to 'force-send' the email, with blank fields, or fill out these fields if they have merely forgotten to complete them. Emails that are sent with blank fields have these filled with placeholder text, e.g. '(No Subject)' and '(No Body)'.
+  - After sending an email successfully, users are taken to their **Sent** mailbox, and alerted that the email has sent successfully. The sent email will be viewable at the top of their sent inbox.
+
 
 ### Usage:
 
