@@ -45,6 +45,10 @@ HEADER
   border-top: 2px solid black;
 }
 
+#logo {
+  margin-right: 10px;
+}
+
 /*=============================
 MAILBOX VIEW
 ===============================

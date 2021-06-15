@@ -4,7 +4,8 @@
 {% block body %}
 
     <div id="header">
-    <h2>{{ request.user.email }}</h2>
+
+    <h2><img id="logo" src="{% static 'mail/logo.png' %}" alt="Mail Logo" width="auto" height="50">{{ request.user.email }}</h2>
 
       <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
       <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
